@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Examen final (80 preguntas) — Genética y Genómica (Temas 1–12)</title>
+  <style>
+    :root { --ok:#0a7a2f; --bad:#b00020; --muted:#666; --card:#f6f7f9; }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; margin:0; background:#fff; color:#111;}
+    header{padding:18px 16px; border-bottom:1px solid #e6e6e6; position:sticky; top:0; background:#fff; z-index:10;}
+    header h1{font-size:18px; margin:0 0 6px;}
+    header .sub{font-size:13px; color:var(--muted); display:flex; gap:12px; flex-wrap:wrap;}
+    main{max-width:980px; margin:0 auto; padding:16px;}
+    .controls{display:flex; gap:10px; flex-wrap:wrap; margin:12px 0 18px;}
+    button{border:1px solid #d0d0d0; background:#111; color:#fff; padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:600;}
+    button.secondary{background:#fff; color:#111;}
+    button:disabled{opacity:.55; cursor:not-allowed;}
+    .note{font-size:13px; color:var(--muted); margin:0 0 10px; line-height:1.35;}
+    .card{background:var(--card); border:1px solid #e6e6e6; border-radius:14px; padding:14px; margin:10px 0;}
+    .qnum{font-weight:800; font-size:14px; color:#111;}
+    .qtext{font-size:15px; margin:6px 0 10px; line-height:1.35;}
+    .opts{display:grid; gap:8px; margin:10px 0 6px;}
+    label.opt{display:flex; gap:10px; align-items:flex-start; padding:10px; border-radius:12px; background:#fff; border:1px solid #e6e6e6; cursor:pointer;}
+    input[type="radio"]{margin-top:2px;}
+    .resultLine{margin-top:10px; font-size:13px; display:none;}
+    .resultLine.ok{color:var(--ok);}
+    .resultLine.bad{color:var(--bad);}
+    .correctAns{margin-top:6px; font-size:13px; display:none;}
+    .correctAns b{font-weight:800;}
+    .summary{border:1px solid #e6e6e6; border-radius:14px; padding:14px; background:#fff; margin:14px 0;}
+    .summary h2{margin:0 0 8px; font-size:16px;}
+    .grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;}
+    .pill{background:var(--card); border:1px solid #e6e6e6; border-radius:12px; padding:10px;}
+    .pill .k{font-size:12px; color:var(--muted);}
+    .pill .v{font-size:18px; font-weight:900;}
+    .small{font-size:12px; color:var(--muted); margin-top:6px;}
+    .stickybar{position:fixed; right:16px; bottom:16px; background:#111; color:#fff; padding:10px 12px; border-radius:999px; font-size:13px; box-shadow:0 8px 24px rgba(0,0,0,.18);}
+    .stickybar span{font-weight:900;}
+    @media (max-width:760px){
+      .grid{grid-template-columns:1fr;}
+      .stickybar{left:16px; right:16px; border-radius:14px;}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Examen final tipo test (80 preguntas) — Genética y Genómica (Temas 1–12)</h1>
+  <div class="sub">
+    <div>✅ 4 opciones · 1 correcta</div>
+    <div>📌 Puntuación: +1 acierto · −1/3 error · 0 en blanco</div>
+    <div>🎓 Dificultad alta (distractores no obvios)</div>
+  </div>
+</header>
+
+<main>
+  <p class="note">
+    Examen final mezclando <b>todos los temas</b> (1–12), con distribución equilibrada y preguntas de estilo universitario.
+    Pulsa <b>Finalizar y corregir</b> para ver nota, aciertos/errores y la respuesta correcta de cada pregunta.
+  </p>
+
+  <div class="controls">
+    <button id="finishBtn">Finalizar y corregir</button>
+    <button id="resetBtn" class="secondary">Reiniciar</button>
+    <button id="scrollTopBtn" class="secondary">Subir arriba</button>
+  </div>
+
+  <div id="summary" class="summary" style="display:none;">
+    <h2>Resultado</h2>
+    <div class="grid">
+      <div class="pill"><div class="k">Aciertos</div><div class="v" id="okCount">0</div></div>
+      <div class="pill"><div class="k">Errores</div><div class="v" id="badCount">0</div></div>
+      <div class="pill"><div class="k">En blanco</div><div class="v" id="blankCount">0</div></div>
+      <div class="pill"><div class="k">Puntuación (con penalización)</div><div class="v" id="score">0</div></div>
+    </div>
+    <div class="small" id="scoreDetail"></div>
+  </div>
+
+  <div id="quiz"></div>
+</main>
+
+<div class="stickybar" id="progress">Respondidas: <span id="answered">0</span>/80</div>
+
+<script>
+  const PENALTY = 1/3;
+  const QUESTIONS = [{"t": "(T1) Una enfermedad genética será hereditaria solo si la alteración en el ADN está presente en…", "o": ["células somáticas del órgano afectado", "células germinales (línea germinal)", "células sanguíneas maduras", "mitocondrias del músculo esquelético"], "a": 1}, {"t": "(T1) Señala la afirmación correcta sobre genética vs herencia vs congénito:", "o": ["Todas las enfermedades genéticas son hereditarias", "Todas las enfermedades congénitas son hereditarias", "Todas las enfermedades hereditarias son genéticas, pero no todas las genéticas son hereditarias", "Todas las enfermedades ambientales son genéticas"], "a": 2}, {"t": "(T1) Incidencia (según el Tema 1) se refiere a…", "o": ["proporción de población afectada en un momento dado", "porcentaje del genoma que codifica proteínas", "probabilidad individual de padecer la enfermedad a lo largo de la vida", "frecuencia de casos nuevos en un periodo de tiempo"], "a": 3}, {"t": "(T1) Prevalencia (según el Tema 1) se refiere a…", "o": ["proporción de población afectada en un momento dado", "número de alelos por locus en una población", "frecuencia de casos nuevos por unidad de tiempo", "tasa de mutación por generación"], "a": 0}, {"t": "(T1) Si la incidencia neonatal es 2/1000, en 5.000 recién nacidos esperarías aproximadamente…", "o": ["5 casos", "20 casos", "2 casos", "10 casos"], "a": 3}, {"t": "(T1) La genómica se define como…", "o": ["análisis exclusivo del ADN mitocondrial", "estudio de un único gen y su producto", "técnica de bandeo cromosómico", "estudio del genoma en su conjunto"], "a": 3}, {"t": "(T2) El número normal de cromosomas humanos en células somáticas es…", "o": ["46", "44", "47", "48"], "a": 0}, {"t": "(T2) El centrómero se caracteriza porque…", "o": ["es una repetición 1–6 pb típica de microsatélites", "solo existe en cromosomas sexuales", "codifica la mayor parte de exones del cromosoma", "es la región donde se anclan microtúbulos del huso en mitosis"], "a": 3}, {"t": "(T2) El centrómero divide el cromosoma en brazos denominados…", "o": ["p (corto) y q (largo)", "x e y", "a y b", "q (corto) y p (largo)"], "a": 0}, {"t": "(T2) El ADN mitocondrial humano tiene ~16,5 kb y contiene…", "o": ["20.000 genes totales, 13 mitocondriales", "13 genes totales", "46 genes totales, 13 codifican proteínas", "37 genes totales, 13 codifican proteínas mitocondriales"], "a": 3}, {"t": "(T2) Menos del …% del genoma humano codifica proteínas (Tema 2).", "o": ["10%", "1,5%", "5%", "0,15%"], "a": 1}, {"t": "(T2) Los microsatélites (STR) son repeticiones en tándem de…", "o": ["hasta 6 kb", "171 pb", "~300 pb", "1–6 pb"], "a": 3}, {"t": "(T2) Los LINE (L1) codifican ORF2 con actividad…", "o": ["ARN polimerasa II", "helicasa y ligasa", "retrotranscriptasa y endonucleasa", "quinasa y fosfatasa"], "a": 2}, {"t": "(T3) En genes codificantes, la secuencia que finalmente se traduce a proteína procede de…", "o": ["secuencias satélite", "promotores", "exones (región codificante dentro de exones)", "intrones"], "a": 2}, {"t": "(T3) Las secuencias consenso clásicas en los límites exón–intrón incluyen…", "o": ["AG al inicio del exón y GT al final del exón", "GT al inicio del intrón y AG al final del intrón", "AATAAA al inicio del intrón y TATA al final", "CCaat y ATaaa en el intrón"], "a": 1}, {"t": "(T3) El 5'-capping del pre-mRNA consiste en…", "o": ["metilar citosinas del ADN", "añadir poli-A al 3'", "añadir 7-metilguanosina al 5' protegiendo frente a degradación", "eliminar intrones por splicing"], "a": 2}, {"t": "(T3) El ORF (marco abierto de lectura) es…", "o": ["la región 3'UTR posterior al codón stop", "la región intrónica eliminada", "la región entre inicio y final de traducción que contiene codones", "solo el promotor TATA"], "a": 2}, {"t": "(T3) La metilación de citosinas en ADN suele asociarse a…", "o": ["aumento de recombinación en meiosis I", "duplicación de exones", "represión de la expresión génica", "activación transcripcional"], "a": 2}, {"t": "(T3) En el ejemplo IGF2/H19, el patrón normal es…", "o": ["ambos silentes siempre", "IGF2 materno activo; H19 paterno activo", "IGF2 paterno activo; H19 materno activo", "ambos bialélicos siempre"], "a": 2}, {"t": "(T4) Un polimorfismo se define cuando…", "o": ["hay ≥2 alelos relativamente frecuentes (≥1%) en la población", "solo afecta a exones", "la mutación es siempre letal", "la variante aparece <0,1%"], "a": 0}, {"t": "(T4) Una SNV se denomina SNP cuando…", "o": ["mide >1 kb", "afecta a región promotora", "la variante tiene frecuencia ≥1%", "introduce un codón stop"], "a": 2}, {"t": "(T4) Las transiciones son cambios…", "o": ["purina↔pirimidina", "solo inserciones de 1 pb", "purina↔purina o pirimidina↔pirimidina", "siempre menos frecuentes que transversiones"], "a": 2}, {"t": "(T4) En general (Tema 4), son más frecuentes…", "o": ["transiciones", "inversiones pericéntricas", "transversiones", "CNV > 1 Mb"], "a": 0}, {"t": "(T4) Los indels típicamente abarcan…", "o": ["10–100 kb obligatoriamente", "1 pb a ~1000 pb", ">1 Mb siempre", "solo 1–6 pb"], "a": 1}, {"t": "(T4) En genética forense, la huella de ADN se basa preferentemente en…", "o": ["bandas G del cariotipo", "CNV grandes", "microsatélites (STR)", "SNPs exónicos únicamente"], "a": 2}, {"t": "(T4) Una inversión es paracéntrica si…", "o": ["no incluye centrómero", "ocurre solo en mtDNA", "incluye centrómero", "implica cambio de una base"], "a": 0}, {"t": "(T5) Para un cariotipo clínico, las células deben…", "o": ["ser neuronas maduras", "estar en G0", "ser eritrocitos", "ser capaces de proliferar en cultivo"], "a": 3}, {"t": "(T5) En sangre periférica, para cultivo y cariotipo se emplean sobre todo…", "o": ["plaquetas", "eritrocitos", "neutrófilos", "linfocitos T"], "a": 3}, {"t": "(T5) Para obtener cromosomas condensados en cariotipo se detienen células en…", "o": ["telofase", "G1", "metafase", "S"], "a": 2}, {"t": "(T5) Un cariotipo estándar (400–550 bandas) detecta típicamente CNV/deleciones/duplicaciones mayores de…", "o": ["~0,5–1 Mb", "~50–100 kb", "~5–10 Mb", "~100 bp"], "a": 2}, {"t": "(T5) FISH es especialmente útil porque…", "o": ["secuencía todo el genoma de forma no dirigida", "solo sirve en metafase, nunca en interfase", "no requiere sondas marcadas", "detecta presencia/ausencia y organización in situ de una secuencia concreta mediante sondas fluorescentes"], "a": 3}, {"t": "(T5) En array-CGH, una deleción en el paciente (respecto a referencia) se observa como predominio de…", "o": ["ausencia de ambos", "amarillo siempre", "rojo sobre verde", "verde sobre rojo"], "a": 2}, {"t": "(T6) La causa más frecuente del síndrome de Down es…", "o": ["disomía uniparental del 21", "deleción parcial 21q", "translocación robertsoniana (14;21)", "no disyunción meiótica con trisomía 21 libre (47,+21)"], "a": 3}, {"t": "(T6) Aproximadamente ~4% de Down se debe a…", "o": ["translocación robertsoniana implicando 21q y otro acrocéntrico", "deleción 22q11.2", "inversión del 21", "mosaicismo por rescate trisómico siempre"], "a": 0}, {"t": "(T6) Disomía uniparental (DUP) significa…", "o": ["trisomía en mosaico", "dos cromosomas distintos del mismo progenitor", "duplicación segmentaria", "ambas copias de un cromosoma derivan del mismo progenitor"], "a": 3}, {"t": "(T6) Isodisomía se refiere a…", "o": ["dos copias idénticas derivadas de cromátidas hermanas del mismo progenitor", "una copia materna y otra paterna", "pérdida del centrómero", "dos copias distintas del mismo progenitor"], "a": 0}, {"t": "(T6) El síndrome de microdeleción más frecuente descrito es…", "o": ["Smith-Magenis", "Williams (7q)", "DiGeorge/velocardiofacial (deleción 22q11.2)", "Ojo de gato"], "a": 2}, {"t": "(T6) En DiGeorge, un gen clave asociado a malformaciones cardiacas/craneofaciales es…", "o": ["TBX1", "RAI1", "ELN", "SRY"], "a": 0}, {"t": "(T6) Una razón por la que aneuploidías sexuales suelen ser menos graves es…", "o": ["por inactivación del X y bajo contenido génico del Y", "porque no hay recombinación en sexos", "porque siempre hay trisomía", "porque el X nunca se expresa"], "a": 0}, {"t": "(T7) En herencia autosómica dominante (heterocigoto afectado × sano), el riesgo por hijo es…", "o": ["100%", "25%", "75%", "50%"], "a": 3}, {"t": "(T7) Heterocigoto compuesto significa…", "o": ["dos alelos normales distintos", "dos alelos idénticos mutantes", "un alelo mutante en X en varón", "dos alelos mutantes diferentes en el mismo locus, sin alelo normal"], "a": 3}, {"t": "(T7) Hemicigoto se aplica típicamente a…", "o": ["mujer con dos alelos mutantes", "varón con un alelo en locus del X", "mtDNA", "cualquier locus autosómico"], "a": 1}, {"t": "(T7) Penetrancia se define como…", "o": ["gravedad clínica", "frecuencia poblacional del alelo", "número de alelos en el locus", "proporción de individuos con genotipo patológico que manifiestan la enfermedad"], "a": 3}, {"t": "(T7) En autosómica recesiva, si ambos padres son portadores, el riesgo por hijo afectado es…", "o": ["1/4", "1/2", "1/8", "1/3"], "a": 0}, {"t": "(T7) Dominancia negativa implica que…", "o": ["hay ganancia de función pura", "la proteína mutante interfiere con la normal", "solo hay haploinsuficiencia", "la proteína mutante no se expresa"], "a": 1}, {"t": "(T8) En enfermedades multifactoriales, la contribución de variantes genéticas suele ser…", "o": ["nula", "mendeliana dominante", "siempre recesiva completa", "aditiva/acumulativa"], "a": 3}, {"t": "(T8) Si una enfermedad muestra rMC > rDC pero rMC < 1, sugiere…", "o": ["error sistemático", "solo ambiente", "solo genética mendeliana", "componente genético y ambiental"], "a": 3}, {"t": "(T8) Fórmula de Falconer para heredabilidad (H²) es…", "o": ["H² = (rMC + rDC)/2", "H² = rMC − rDC", "H² = 2(rMC − rDC)", "H² = 2(rDC − rMC)"], "a": 2}, {"t": "(T8) En asociación caso-control, el OR en tabla 2×2 se calcula como…", "o": ["(a/c)/(b/d)=ad/bc", "(a-d)/(b-c)", "(a+b)/(c+d)", "(a×b)/(c×d)"], "a": 0}, {"t": "(T8) En un Manhattan plot de GWAS, el eje X suele representar…", "o": ["OR del SNP", "frecuencia alélica en casos", "tamaño del efecto ambiental", "localización genómica del SNP"], "a": 3}, {"t": "(T8) Un rasgo cualitativo (Tema 8) se caracteriza por…", "o": ["variación continua", "exigir fórmula de Falconer", "medirse siempre en mmHg", "fenotipos discretos (p. ej., afectado/no afectado)"], "a": 3}, {"t": "(T8) En el ejemplo del Tema 8, loci modificadores de gravedad pulmonar en FQ incluyen…", "o": ["MBL2 y TGFB1", "FMR1 y HTT", "SRY y TBX1", "ELN y RAI1"], "a": 0}, {"t": "(T9) La frecuencia de recombinación (FR) se calcula como…", "o": ["parentales/total ×100%", "recombinantes/total ×100%", "1−θ", "(a+b)/(c+d)"], "a": 1}, {"t": "(T9) El parámetro θ (theta) varía entre…", "o": ["0 y 0,5", "0,5 y 1", "−1 y 1", "0 y 1"], "a": 0}, {"t": "(T9) θ = 0 indica…", "o": ["ligamiento completo (sin recombinación)", "no ligamiento", "recombinación máxima", "equilibrio de ligamiento"], "a": 0}, {"t": "(T9) FR≈50% se espera cuando los loci están…", "o": ["en cromosomas distintos o muy separados en el mismo cromosoma", "en mtDNA", "muy próximos en el mismo cromosoma", "en el centrómero siempre"], "a": 0}, {"t": "(T9) En equilibrio de ligamiento, la frecuencia de un haplotipo es…", "o": ["siempre menor que el producto", "siempre mayor que el producto", "independiente de frecuencias alélicas", "producto de frecuencias alélicas"], "a": 3}, {"t": "(T9) D’ se define como…", "o": ["D×Dmax", "Dmax/D", "D/Dmax", "D + Dmax"], "a": 2}, {"t": "(T9) Un marcador útil para análisis de ligamiento debe ser…", "o": ["polimórfico y con localización conocida", "solo de novo", "solo proteico", "no polimórfico"], "a": 0}, {"t": "(T10) El desenlace más frecuente de variantes patogénicas es…", "o": ["expresión ectópica siempre", "ganancia de función", "propiedad nueva", "pérdida de función proteica"], "a": 3}, {"t": "(T10) Mutaciones en elementos reguladores suelen afectar principalmente a…", "o": ["número de cromosomas", "longitud del telómero", "abundancia/tiempo/tipo celular de expresión del mRNA", "secuencia de aminoácidos"], "a": 2}, {"t": "(T10) La β-talasemia se debe a…", "o": ["deleción 22q11.2", "disminución de producción de β-globina", "ganancia de función de β-globina", "mutación mitocondrial"], "a": 1}, {"t": "(T10) La enfermedad de células I se asocia a defecto de…", "o": ["recombinación meiótica", "modificación postraduccional (marcado manosa-6-fosfato)", "metilación del ADN", "traducción"], "a": 1}, {"t": "(T10) Heterogeneidad de locus significa…", "o": ["más de un alelo en un locus", "más de un locus puede producir un mismo fenotipo", "ausencia de variación", "un locus produce varios fenotipos"], "a": 1}, {"t": "(T10) Heterogeneidad clínica/fenotípica significa…", "o": ["más de un locus asociado a un fenotipo", "más de un alelo en un locus", "equilibrio de ligamiento", "más de un fenotipo asociado a mutaciones en un único locus"], "a": 3}, {"t": "(T10) Una mutación en región no codificante puede alterar…", "o": ["solo la secuencia codificante", "splicing/estabilidad de mRNA y/o regulación/dosis génica", "solo bandeo G", "solo recombinación telomérica"], "a": 1}, {"t": "(T11) Una neoplasia se define como…", "o": ["proliferación celular incontrolada con masa/tumor", "infección viral aguda", "necrosis tisular sin proliferación", "proliferación controlada sin masa"], "a": 0}, {"t": "(T11) Cáncer maligno se caracteriza por…", "o": ["apoptosis aumentada obligatoria", "crecimiento limitado por contacto", "invasión local y metástasis", "encapsulación sin invasión"], "a": 2}, {"t": "(T11) Los carcinomas se originan en…", "o": ["tejido mesenquimatoso", "tejido adiposo exclusivamente", "médula ósea", "tejido epitelial"], "a": 3}, {"t": "(T11) Las mutaciones no recurrentes y aparentemente aleatorias en tumores se llaman…", "o": ["de impronta", "conductoras", "pasajeras", "germinales"], "a": 2}, {"t": "(T11) La hipótesis de Knudson se conoce como…", "o": ["mosaicismo somático", "two-hit (dos eventos)", "equilibrio de ligamiento", "heredabilidad de Falconer"], "a": 1}, {"t": "(T11) PTEN actúa principalmente…", "o": ["activando directamente BCR-ABL1", "inhibiendo p53 por ubiquitinación", "defosforilando PIP3→PIP2", "fosforilando PIP2→PIP3"], "a": 2}, {"t": "(T11) El cromosoma Filadelfia (t(9;22)) genera el gen quimérico…", "o": ["IGH–BCL2", "EML4–ALK", "BCR–ABL1", "RB1–TP53"], "a": 2}, {"t": "(T12) El consejo genético (ASHG, 1975) es un proceso de comunicación sobre…", "o": ["problemas humanos asociados a aparición o riesgo de un trastorno genético en una familia", "diagnóstico radiológico de tumores", "selección obligatoria de opciones reproductivas", "tratamiento farmacológico estandarizado"], "a": 0}, {"t": "(T12) Una característica esencial del consejo genético es que es…", "o": ["automático", "judicial", "no directivo", "directivo"], "a": 2}, {"t": "(T12) En AD (heterocigoto × sano) el riesgo por hijo es…", "o": ["25%", "100%", "50%", "75%"], "a": 2}, {"t": "(T12) En AR (dos portadores), proporciones esperadas en la descendencia son…", "o": ["75% afectado, 25% sano", "25% afectado, 50% portador sano, 25% sano", "50% afectado, 50% sano", "100% portador"], "a": 1}, {"t": "(T12) En dominante ligada al X, un varón afectado transmite la mutación a…", "o": ["todas las hijas y a ningún hijo varón", "todos los hijos varones y ninguna hija", "la mitad de hijas y la mitad de hijos", "todos los hijos varones"], "a": 0}, {"t": "(T12) En recesiva ligada al X, típicamente…", "o": ["los varones afectados no transmiten a sus hijos varones", "son frecuentes mujeres afectadas", "hay transmisión padre→hijo varón frecuente", "los varones afectados transmiten a todos los hijos varones"], "a": 0}, {"t": "(T12) En el ejemplo: padre portador CF y madre con frecuencia de portadores 1/35; riesgo de hijo afectado (AR) es…", "o": ["1/280", "1/140", "1/70", "1/35"], "a": 1}];
+
+  const quizEl = document.getElementById("quiz");
+  const answeredEl = document.getElementById("answered");
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function render(){
+    quizEl.innerHTML = "";
+    QUESTIONS.forEach((q, idx) => {
+      const card = document.createElement("section");
+      card.className = "card";
+      card.id = "q" + (idx+1);
+
+      card.innerHTML = `
+        <div class="qnum">Pregunta ${idx+1}</div>
+        <div class="qtext">${escapeHtml(q.t)}</div>
+        <div class="opts">
+          ${q.o.map((opt, j) => `
+            <label class="opt">
+              <input type="radio" name="q${idx}" value="${j}">
+              <div><b>${String.fromCharCode(65+j)}.</b> ${escapeHtml(opt)}</div>
+            </label>
+          `).join("")}
+        </div>
+        <div class="resultLine" id="res_${idx}"></div>
+        <div class="correctAns" id="corr_${idx}"></div>
+      `;
+      quizEl.appendChild(card);
+    });
+    updateAnsweredCount();
+  }
+
+  function getSelected(idx){
+    const checked = document.querySelector(`input[name="q${idx}"]:checked`);
+    return checked ? Number(checked.value) : null;
+  }
+
+  function updateAnsweredCount(){
+    let answered = 0;
+    for (let i=0;i<QUESTIONS.length;i++) if (getSelected(i) !== null) answered++;
+    answeredEl.textContent = answered;
+  }
+
+  document.addEventListener("change", (e) => {
+    if (e.target && e.target.matches('input[type="radio"]')) updateAnsweredCount();
+  });
+
+  function grade(){
+    let ok=0, bad=0, blank=0;
+    const total = QUESTIONS.length;
+
+    for (let i=0;i<total;i++) {
+      const sel = getSelected(i);
+      const q = QUESTIONS[i];
+
+      const res = document.getElementById(`res_${i}`);
+      const corr = document.getElementById(`corr_${i}`);
+
+      res.style.display = "block";
+      corr.style.display = "block";
+
+      const correctLetter = String.fromCharCode(65 + q.a);
+      const correctText = q.o[q.a];
+
+      corr.innerHTML = `Respuesta correcta: <b>${correctLetter}</b>. ${escapeHtml(correctText)}`;
+
+      if (sel === null) {
+        blank++;
+        res.className = "resultLine bad";
+        res.textContent = "⚪ En blanco.";
+      } else if (sel === q.a) {
+        ok++;
+        res.className = "resultLine ok";
+        res.textContent = "✅ Correcta.";
+      } else {
+        bad++;
+        res.className = "resultLine bad";
+        res.textContent = `❌ Incorrecta. Marcaste ${String.fromCharCode(65+sel)}.`;
+      }
+    }
+
+    const rawScore = ok - bad * PENALTY;
+
+    document.getElementById("summary").style.display = "block";
+    document.getElementById("okCount").textContent = ok;
+    document.getElementById("badCount").textContent = bad;
+    document.getElementById("blankCount").textContent = blank;
+    document.getElementById("score").textContent = rawScore.toFixed(2);
+
+    document.getElementById("scoreDetail").textContent =
+      `Cálculo: ${ok}×1 − ${bad}×(1/3) = ${ok} − ${(bad/3).toFixed(2)} = ${rawScore.toFixed(2)} (sobre ${total}).`;
+
+    document.querySelectorAll('input[type="radio"]').forEach(inp => inp.disabled = true);
+    document.getElementById("finishBtn").disabled = true;
+
+    document.getElementById("summary").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function resetAll(){
+    document.querySelectorAll('input[type="radio"]').forEach(inp => {
+      inp.disabled = false;
+      inp.checked = false;
+    });
+
+    for (let i=0;i<QUESTIONS.length;i++) {
+      const res = document.getElementById(`res_${i}`);
+      const corr = document.getElementById(`corr_${i}`);
+      if (res) res.style.display = "none";
+      if (corr) corr.style.display = "none";
+    }
+
+    document.getElementById("summary").style.display = "none";
+    document.getElementById("finishBtn").disabled = false;
+    updateAnsweredCount();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  document.getElementById("finishBtn").addEventListener("click", grade);
+  document.getElementById("resetBtn").addEventListener("click", resetAll);
+  document.getElementById("scrollTopBtn").addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
+
+  render();
+</script>
+</body>
+</html>
